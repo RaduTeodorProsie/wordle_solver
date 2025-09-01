@@ -55,10 +55,13 @@ fn main() {
         }
 
         loop {
-            println!("\nWhat's your guess?");
+            println!("\nWhat's your guess? Press enter to use the first suggestion");
             let mut guess = String::new();
             std::io::stdin().read_line(&mut guess).unwrap();
-            let guess = guess.trim();
+            let mut guess = guess.trim().to_string();
+            if guess.is_empty() {
+                guess = String::from_utf8(suggestions[0].to_vec()).unwrap();
+            }
             if !is_valid_word(&guess, &valid_words) {
                 println!("{}", "Invalid word found".red());
                 continue;
