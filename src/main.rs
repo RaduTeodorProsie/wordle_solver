@@ -1,6 +1,7 @@
 mod solver;
 
 use crate::solver::{Word, get_words};
+use colored::Colorize;
 use solver::{Info, best_guess};
 use std::collections::HashSet;
 
@@ -37,23 +38,29 @@ fn main() {
     let valid_words = get_words().iter().copied().collect::<HashSet<_>>();
 
     println!(
-        "This is a worlde solver.\nThe feedback can be given in either uppercase or lowercase:\nG for green, Y for yellow and B for grey\n\n"
+        "This is a wordle solver.\nThe feedback can be given in either uppercase or lowercase:\nG for {}, Y for {} and B for {}\n\n",
+        "green".green(),
+        "yellow".yellow(),
+        "grey"
     );
 
     let mut guesses: Vec<[u8; 5]> = vec![];
     let mut feedbacks: Vec<[Info; 5]> = vec![];
 
-    while feedbacks.last() != Some(&[Info::Green; 5]) {
-        let next = best_guess(&guesses, &feedbacks);
-        println!("Best guess is: {}", String::from_utf8_lossy(&next));
+    'a: while feedbacks.last() != Some(&[Info::Green; 5]) {
+        let suggestions = best_guess(&guesses, &feedbacks);
+        println!("Top {} suggestions:", suggestions.len());
+        for word in &suggestions {
+            println!(" - {}", String::from_utf8_lossy(word));
+        }
 
         loop {
-            println!("What's your guess?");
+            println!("\nWhat's your guess?");
             let mut guess = String::new();
             std::io::stdin().read_line(&mut guess).unwrap();
             let guess = guess.trim();
             if !is_valid_word(&guess, &valid_words) {
-                println!("Invalid word found");
+                println!("{}", "Invalid word found".red());
                 continue;
             }
 
@@ -63,12 +70,26 @@ fn main() {
             if let Some(feedback) = parse_feedback(&feedback_string) {
                 feedbacks.push(feedback);
                 guesses.push(guess.as_bytes().try_into().unwrap());
+
+                let remaining = solver::filter_possible_answers(&guesses, &feedbacks);
+                if remaining.len() == 1 {
+                    let word = String::from_utf8_lossy(&remaining[0]);
+                    println!("{} {}", "\nThe word is".green(), word.green());
+                    break 'a;
+                }
+                println!("\nPossible answers left: {}", remaining.len());
+                if !remaining.is_empty() {
+                    println!("Examples:");
+                    for w in remaining.iter().take(5) {
+                        println!(" - {}", String::from_utf8_lossy(w));
+                    }
+                }
                 break;
             } else {
-                println!("Invalid feedback");
+                println!("{}", "Invalid feedback".red());
             }
         }
     }
 
-    println!("The word was guessed! Woohoo!");
+    println!("{}", "The word was guessed! Woohoo!".green());
 }

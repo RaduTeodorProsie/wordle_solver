@@ -1,8 +1,10 @@
 use Info::{Green, Yellow};
+use rayon::iter::ParallelIterator;
 
 use std::cmp::PartialEq;
 use std::collections::HashMap;
 
+use rayon::iter::IntoParallelRefIterator;
 use std::sync::OnceLock;
 
 #[derive(Clone, PartialEq, Debug, Copy, Eq, Hash)]
@@ -69,13 +71,30 @@ fn matches_info(word: &Word, guess: &Word, info: &Pattern) -> bool {
     get_feedback(guess, word) == *info
 }
 
-pub fn best_guess(guesses: &Vec<Word>, feedback: &Vec<Pattern>) -> Word {
+pub fn filter_possible_answers(guesses: &Vec<Word>, feedback: &Vec<Pattern>) -> Vec<Word> {
     if feedback.is_empty() {
-        return b"roate".to_owned();
+        return get_answers().clone();
+    }
+    get_answers()
+        .iter()
+        .filter(|&candidate| {
+            guesses
+                .iter()
+                .zip(feedback.iter())
+                .all(|(g, f)| matches_info(candidate, g, f))
+        })
+        .copied()
+        .collect()
+}
+
+#[allow(clippy::needless_borrow)]
+pub fn best_guess(guesses: &Vec<Word>, feedback: &Vec<Pattern>) -> Vec<Word> {
+    if feedback.is_empty() {
+        return vec![b"roate".to_owned()];
     }
     let words = get_words();
     let possible_answers: Vec<&Word> = get_answers()
-        .iter()
+        .par_iter()
         .filter(|&candidate| {
             guesses
                 .iter()
@@ -84,13 +103,15 @@ pub fn best_guess(guesses: &Vec<Word>, feedback: &Vec<Pattern>) -> Word {
         })
         .collect();
     if possible_answers.len() == 1 {
-        return *possible_answers[0];
+        return vec![(*possible_answers[0]).clone()];
     }
+
     if possible_answers.is_empty() {
         panic!(
             "No matching answers for the provided feedback; check your feedback parsing and guess histories"
         );
     }
+
     let list_size_if_guessed: Vec<(Word, f64)> = words
         .iter()
         .map(|word| {
@@ -106,20 +127,17 @@ pub fn best_guess(guesses: &Vec<Word>, feedback: &Vec<Pattern>) -> Word {
                     .iter()
                     .filter(|&&check| matches_info(check, word, p))
                     .count() as f64;
-                expected += *count as f64 * still_valid / total;
+                expected += (*count as f64 / total) * still_valid;
             }
 
             (*word, expected)
         })
         .collect();
-    if let Some((best_guess, _)) = list_size_if_guessed
-        .iter()
-        .min_by(|a, b| a.1.partial_cmp(&b.1).unwrap())
-    {
-        return best_guess.clone().to_owned();
-    };
 
-    b"Soare".to_owned()
+    let mut candidates = list_size_if_guessed;
+    candidates.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
+    candidates.truncate(5);
+    candidates.into_iter().map(|(w, _)| w).collect()
 }
 
 #[cfg(test)]
