@@ -1,13 +1,13 @@
 mod solver;
 
-use std::collections::HashSet;
+use crate::solver::{Word, get_words};
 use solver::{Info, best_guess};
-use crate::solver::{get_words, Word};
+use std::collections::HashSet;
 
 fn parse_feedback(s: &str) -> Option<[Info; 5]> {
     let chars: Vec<char> = s.trim().chars().filter(|c| !c.is_whitespace()).collect();
 
-    if chars.len() != 5{
+    if chars.len() != 5 {
         return None;
     }
 
@@ -34,10 +34,11 @@ fn is_valid_word(s: &str, valid_words: &HashSet<Word>) -> bool {
     valid_words.contains(&word)
 }
 fn main() {
-
     let valid_words = get_words().iter().copied().collect::<HashSet<_>>();
 
-    println!("This is a worlde solver.\nThe feedback can be given in either uppercase or lowercase:\nG for green, Y for yellow and B for grey\n\n");
+    println!(
+        "This is a worlde solver.\nThe feedback can be given in either uppercase or lowercase:\nG for green, Y for yellow and B for grey\n\n"
+    );
 
     let mut guesses: Vec<[u8; 5]> = vec![];
     let mut feedbacks: Vec<[Info; 5]> = vec![];
@@ -56,17 +57,14 @@ fn main() {
                 continue;
             }
 
-
             println!("\nWhat's the feedback for {}?", guess);
             let mut feedback_string = String::new();
             std::io::stdin().read_line(&mut feedback_string).unwrap();
             if let Some(feedback) = parse_feedback(&feedback_string) {
                 feedbacks.push(feedback);
                 guesses.push(guess.as_bytes().try_into().unwrap());
-                break
-            }
-
-            else{
+                break;
+            } else {
                 println!("Invalid feedback");
             }
         }
