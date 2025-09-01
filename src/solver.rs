@@ -92,6 +92,7 @@ pub fn best_guess(guesses: &Vec<Word>, feedback: &Vec<Pattern>) -> Vec<Word> {
     if feedback.is_empty() {
         return vec![b"roate".to_owned()];
     }
+
     let words = get_words();
     let possible_answers: Vec<&Word> = get_answers()
         .par_iter()
@@ -113,7 +114,7 @@ pub fn best_guess(guesses: &Vec<Word>, feedback: &Vec<Pattern>) -> Vec<Word> {
     }
 
     let list_size_if_guessed: Vec<(Word, f64)> = words
-        .iter()
+        .par_iter()
         .map(|word| {
             let mut frq: HashMap<Pattern, usize> = HashMap::new();
             possible_answers.iter().for_each(|&answer| {
