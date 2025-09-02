@@ -1,36 +1,67 @@
 # wordle_solver
 
-A small interactive Wordle solver written in Rust. It suggests guesses and filters possible answers based on feedback you provide for each guess (G = green, Y = yellow, B = grey). Feedback is case-insensitive.
+A small, fast interactive Wordle solver (Rust) that suggests guesses and filters possible answers based on feedback. Feedback accepts G (green), Y (yellow), and B (grey) in either case.
 
-## Demo video
+---
 
+🎞️ Demo
 
+- Watch: https://github.com/user-attachments/assets/3a6c4982-58c6-478f-b432-d23c1b2165fd
 
-https://github.com/user-attachments/assets/3a6c4982-58c6-478f-b432-d23c1b2165fd
+---
 
+⬇️ Download
 
-## Download
+- Download a prebuilt binary from the Releases page and run it — no build required.
 
-- Get the prebuilt binary from the project's Releases page. No build is required — just download the appropriate executable for your platform and run it.
+---
 
-## Usage
+🚀 Quick usage
 
-- Run the downloaded binary from a terminal.
-- The solver will propose top suggestions for your next guess.
-- Type a guess and press Enter.
-- When prompted, enter the feedback for that guess using G (green), Y (yellow) and B (grey). Upper- or lowercase is accepted.
+1. Run the downloaded binary from a terminal.
+2. The solver will propose one or more suggested guesses.
+3. Type a guess and press Enter.
+4. Enter feedback for that guess using G (green), Y (yellow), and B (grey). Examples: `ggbby`, `GyBbY`, `BBBBB`.
 
-## Notes
+Example session
 
-- If the solver repeatedly suggests the same unexpected word, verify your guess/feedback history is correct and in order. If it panics with "No matching answers for the provided feedback", one or more provided feedback entries are inconsistent with the word lists.
+> Top suggestion: roate
 
-## Files of interest (source)
+What's your guess?
 
-- src/main.rs — interactive CLI and program entrypoint.
-- src/solver.rs — solver logic (scoring, filtering, best guess selection).
-- valid-answers.txt — the secret answers list, as per the NYT.
-- valid-words.txt — valid guesses list.
+roate
 
-## License
+What's the feedback for roate?
 
-This project is licensed under the MIT License. See LICENSE for details.
+ggbby
+
+The solver will update its possible answers and show new suggestions.
+
+---
+
+🧭 Notes & troubleshooting
+
+- Feedback is case-insensitive.
+- If the solver repeatedly suggests the same unexpected word, confirm your guess/feedback history is correct and in chronological order.
+- A panic saying "No matching answers for the provided feedback" means one or more of your provided feedback entries are inconsistent with the word lists (valid-answers.txt).
+
+---
+
+📁 Files of interest (source)
+
+- src/main.rs — CLI and entry point
+- src/solver.rs — solver logic (scoring, filtering, best-guess selection)
+- valid-answers.txt — possible secret answers (NYT list)
+- valid-words.txt — valid guesses
+
+---
+
+🤝 Contributing
+
+Issues and pull requests welcome. Please include a short reproduction for bugs.
+
+---
+
+📜 License
+
+MIT — see LICENSE
