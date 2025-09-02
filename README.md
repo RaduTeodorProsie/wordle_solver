@@ -1,6 +1,6 @@
 # wordle_solver
 
-A small, fast interactive Wordle solver (Rust) that suggests guesses and filters possible answers based on feedback. Feedback accepts G (green), Y (yellow), and B (grey) in either case.
+A small and fast interactive Wordle solver (Rust) that suggests guesses and filters possible answers based on feedback. Feedback accepts G (green), Y (yellow), and B (grey) in either case.
 
 ---
 
