@@ -6,9 +6,9 @@ A small, fast interactive Wordle solver (Rust) that suggests guesses and filters
 
 🎞️ Demo
 
-- Watch: https://github.com/user-attachments/assets/3a6c4982-58c6-478f-b432-d23c1b2165fd
 
----
+https://github.com/user-attachments/assets/0637a7b3-8230-4d66-b1dd-c5f81e55ce2c
+
 
 ⬇️ Download
 
