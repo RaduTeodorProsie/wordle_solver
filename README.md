@@ -4,7 +4,10 @@ A small interactive Wordle solver written in Rust. It suggests guesses and filte
 
 ## Demo video
 
-- Demo: https://github.com/user-attachments/assets/580aa641-166c-40cb-b853-b533c1f4fb02
+
+
+https://github.com/user-attachments/assets/3a6c4982-58c6-478f-b432-d23c1b2165fd
+
 
 ## Download
 
